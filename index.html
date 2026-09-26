@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>കായംകുളം ഗവ. ടൗൺ യു.പി.എസ് - സ്കൂൾ & ക്ലാസ് ലീഡർ തെരഞ്ഞെടുപ്പ്</title>
+
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- jsPDF & html2pdf for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <!-- Google Font - Manjari for Malayalam -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Google Firebase Compatibility SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Google Firebase Project Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDrfDtuvE4HzU-ElFpRnHjclDtcZYRSC04",
+            authDomain: "kayamkulam-town-ups-election.firebaseapp.com",
+            databaseURL: "https://kayamkulam-town-ups-election-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "kayamkulam-town-ups-election",
+            storageBucket: "kayamkulam-town-ups-election.firebasestorage.app",
+            messagingSenderId: "380103850183",
+            appId: "1:380103850183:web:e273ae7ee1565b1c39e6e2",
+            measurementId: "G-NPCH0PHFNE"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    </script>
+
+    <style>
+        body {
+            font-family: 'Manjari', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .pulse-subtle {
+            animation: pulse-subtle 2s infinite;
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.95; transform: scale(1.02); }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between relative overflow-x-hidden">
+
+    <!-- Tiny Admin Access Box (Top-Right) -->
+    <div class="fixed top-2 right-2 z-50">
+        <button onclick="openAdminAuthModal()" class="bg-slate-800 hover:bg-slate-900 text-white p-2 rounded-lg shadow-lg text-xs flex items-center gap-1 border border-slate-700 transition" title="അഡ്മിൻ പാനൽ">
+            <i class="fas fa-user-shield text-amber-400"></i>
+            <span class="font-bold">അഡ്മിൻ</span>
+        </button>
+    </div>
+
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-emerald-800 to-teal-900 text-white p-4 shadow-xl text-center border-b-4 border-amber-400">
+        <h1 class="text-2xl md:text-3xl font-bold tracking-wide">കായംകുളം ഗവ. ടൗൺ യു.പി.എസ്</h1>
+        <h2 class="text-lg md:text-xl font-semibold text-amber-300 mt-1">സ്കൂൾ & ക്ലാസ് ലീഡർ തെരഞ്ഞെടുപ്പ്</h2>
+        <div class="mt-2 inline-block bg-teal-950/60 text-teal-200 text-xs px-3 py-1 rounded-full border border-teal-500/30">
+            <i class="fas fa-users-cog mr-1"></i> തയ്യാറാക്കിയത്: <span class="font-bold text-white">സോഷ്യൽ സയൻസ് ക്ലബ്ബ്</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container mx-auto px-4 py-6 flex-1 flex flex-col justify-center items-center max-w-5xl">
+
+        <!-- VIEW 1: Class Selection & Login View -->
+        <section id="classLoginView" class="w-full max-w-md bg-white p-6 md:p-8 rounded-2xl shadow-2xl border border-slate-200">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
+                    <i class="fas fa-vote-yea"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">ക്ലാസ്സ് ലോഗിൻ ചെയ്യുക</h3>
+                <p class="text-xs text-slate-500 mt-1">വോട്ടിംഗ് ആരംഭിക്കുന്നതിനായി ക്ലാസ്സും രഹസ്യവാക്കും നൽകുക</p>
+            </div>
+
+            <form onsubmit="handleClassLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">ക്ലാസ്സ് തിരഞ്ഞെടുക്കുക</label>
+                    <select id="loginClassSelect" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50 font-bold text-slate-700" required>
+                        <!-- Dynamic Options -->
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">പാസ്‌വേഡ് (Password)</label>
+                    <input type="password" id="loginClassPassword" placeholder="ക്ലാസ്സ് പാസ്‌വേഡ് എന്റർ ചെയ്യുക" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50 text-center tracking-widest" required>
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold py-3.5 rounded-xl shadow-lg transition duration-200 text-lg flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-in-alt"></i> ലോഗിൻ ചെയ്ത് വോട്ടിംഗ് ആരംഭിക്കുക
+                </button>
+            </form>
+        </section>
+
+        <!-- Polling Active Status Bar (Visible during voting session) -->
+        <div id="activeSessionHeader" class="hidden w-full max-w-4xl bg-white rounded-xl shadow-md p-3 mb-4 flex flex-wrap items-center justify-between border-l-4 border-emerald-600 gap-2">
+            <div class="flex items-center gap-2">
+                <span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg text-sm font-bold flex items-center gap-1">
+                    <i class="fas fa-school"></i> <span id="currentActiveClassDisplay">ക്ലാസ്സ്: -</span>
+                </span>
+                <span id="sessionStatusBadge" class="bg-emerald-600 text-white text-xs px-2.5 py-1 rounded-full font-bold animate-pulse">
+                    വോട്ടിംഗ് പുരോഗമിക്കുന്നു
+                </span>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button onclick="promptViewClassVotes()" class="bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-300 text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 transition">
+                    <i class="fas fa-chart-pie"></i> വോട്ട് എണ്ണം കാണുക
+                </button>
+                <button onclick="promptEndClassPoll()" class="bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-300 text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 transition">
+                    <i class="fas fa-lock"></i> വോട്ടിംഗ് അവസാനിപ്പിക്കുക
+                </button>
+                <button onclick="logoutClassSession()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-2.5 py-1.5 rounded-lg transition" title="ലോഗ് ഔട്ട്">
+                    <i class="fas fa-power-off"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW 2: Class Leader Election Interface -->
+        <section id="classLeaderVoteView" class="hidden w-full max-w-4xl">
+            <div class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white p-4 rounded-t-2xl shadow-md text-center">
+                <h3 class="text-2xl font-bold"><span id="classLeaderTitle">ക്ലാസ് ലീഡർ തെരഞ്ഞെടുപ്പ്</span></h3>
+                <p class="text-sm text-blue-200 mt-0.5">താങ്കൾക്ക് ഇഷ്ടമുള്ള സ്ഥാനാർത്ഥിയുടെ ചിഹ്നത്തിന് നേരെയുള്ള വോട്ട് ബട്ടണിൽ അമർത്തുക</p>
+            </div>
+
+            <div id="classCandidatesGrid" class="bg-slate-200/60 p-4 md:p-6 rounded-b-2xl shadow-xl grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Class Candidates Dynamic Cards -->
+            </div>
+        </section>
+
+        <!-- VIEW 3: Transition Screen (Class -> School Leader) -->
+        <section id="schoolLeaderNoticeView" class="hidden w-full max-w-xl text-center">
+            <!-- Phase A: Thank You Message for Class Leader Vote -->
+            <div id="classThankYouCard" class="bg-white p-8 rounded-3xl shadow-2xl border-4 border-emerald-500 animate-bounce">
+                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-inner">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">നന്ദി, താങ്കളുടെ വോട്ട് രേഖപ്പെടുത്തിക്കഴിഞ്ഞു!</h3>
+                <p class="text-slate-600 text-sm font-semibold">ക്ലാസ് ലീഡർ വോട്ട് വിജയകരമായി ഔദ്യോഗികമായി രേഖപ്പെടുത്തി.</p>
+            </div>
+
+            <!-- Phase B: School Leader Election Notice -->
+            <div id="schoolLeaderNoticeCard" class="hidden bg-gradient-to-br from-amber-500 to-orange-600 text-white p-8 rounded-3xl shadow-2xl border-4 border-amber-300 pulse-subtle">
+                <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl backdrop-blur-sm">
+                    <i class="fas fa-award"></i>
+                </div>
+                <h3 class="text-2xl md:text-3xl font-extrabold mb-2">അടുത്തത്: സ്കൂൾ ലീഡർ തെരഞ്ഞെടുപ്പ്!</h3>
+                <p class="text-amber-100 text-lg">സ്കൂൾ ലീഡർ വോട്ടിംഗ് ഇന്റർഫേസ് ഉടൻ ലഭ്യമാകും...</p>
+                <div class="mt-6 flex justify-center">
+                    <div class="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: School Leader Election Interface -->
+        <section id="schoolLeaderVoteView" class="hidden w-full max-w-4xl">
+            <div class="bg-gradient-to-r from-amber-600 to-orange-700 text-white p-4 rounded-t-2xl shadow-md text-center border-b-2 border-amber-300">
+                <h3 class="text-2xl font-bold"><i class="fas fa-star mr-2 text-yellow-300"></i>സ്കൂൾ ലീഡർ തെരഞ്ഞെടുപ്പ്</h3>
+                <p class="text-sm text-amber-100 mt-0.5">താങ്കൾക്ക് ഇഷ്ടമുള്ള സ്കൂൾ ലീഡർ സ്ഥാനാർത്ഥിയുടെ വോട്ട് ബട്ടണിൽ അമർത്തുക</p>
+            </div>
+
+            <div id="schoolCandidatesGrid" class="bg-slate-200/60 p-4 md:p-6 rounded-b-2xl shadow-xl grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- School Candidates Dynamic Cards -->
+            </div>
+        </section>
+
+        <!-- VIEW 5: Final School Leader Vote Thank You View -->
+        <section id="finalThankYouView" class="hidden w-full max-w-md text-center">
+            <div class="bg-white p-8 rounded-3xl shadow-2xl border-4 border-teal-500">
+                <div class="w-20 h-20 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-inner">
+                    <i class="fas fa-heart text-rose-500"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">വോട്ടിംഗ് പൂർത്തിയായി!</h3>
+                <p class="text-slate-600 font-semibold mb-4">താങ്കളുടെ സ്കൂൾ ലീഡർ വോട്ടും രേഖപ്പെടുത്തിക്കഴിഞ്ഞു. നന്ദി!</p>
+                
+                <div class="bg-teal-50 border border-teal-200 rounded-xl p-3 text-teal-900 text-sm">
+                    അടുത്ത വോട്ടർക്കായി പേജ് <span id="countdownTimer" class="font-bold text-lg text-teal-700">5</span> സെക്കൻഡിനുള്ളിൽ മാറും...
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 6: Class Poll Ended Screen -->
+        <section id="classEndedView" class="hidden w-full max-w-md text-center">
+            <div class="bg-white p-8 rounded-3xl shadow-2xl border-4 border-rose-500">
+                <div class="w-20 h-20 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-inner">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">വോട്ടിംഗ് പൂർത്തിയായി!</h3>
+                <p class="text-rose-600 font-bold text-lg mb-2">ഈ ക്ലാസ്സിലെ വോട്ടിംഗ് പൂർത്തിയായി.</p>
+                <p class="text-slate-500 text-xs">അഡ്മിന് മാത്രമേ ഈ ക്ലാസ്സിലെ വോട്ടിംഗ് പുനരാരംഭിക്കാൻ (Restart) സാധിക്കൂ.</p>
+                <button onclick="logoutClassSession()" class="mt-6 bg-slate-800 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow hover:bg-slate-900 transition">
+                    മറ്റൊരു ക്ലാസ്സ് തിരഞ്ഞെടുക്കുക
+                </button>
+            </div>
+        </section>
+
+        <!-- ADMIN DASHBOARD MODAL -->
+        <div id="adminModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 md:p-4 overflow-y-auto">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl my-auto flex flex-col max-h-[92vh] border border-slate-300">
+                <!-- Admin Header -->
+                <div class="bg-slate-900 text-white p-4 rounded-t-2xl flex justify-between items-center border-b border-slate-700">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-user-shield text-amber-400 text-xl"></i>
+                        <div>
+                            <h3 class="font-bold text-lg">അഡ്മിനിസ്ട്രേഷൻ പാനൽ</h3>
+                            <p class="text-xs text-slate-400">കായംകുളം ഗവ. ടൗൺ യു.പി.എസ്</p>
+                        </div>
+                    </div>
+                    <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white p-1 text-2xl font-bold">&times;</button>
+                </div>
+
+                <!-- Admin Tabs Nav -->
+                <div class="bg-slate-100 border-b border-slate-300 flex overflow-x-auto text-sm font-bold text-slate-600">
+                    <button onclick="switchAdminTab('classes')" id="tabBtn-classes" class="px-5 py-3 border-b-2 border-emerald-600 text-emerald-800 bg-white flex items-center gap-2 whitespace-nowrap">
+                        <i class="fas fa-chalkboard"></i> ക്ലാസ്സുകൾ & പാസ്‌വേഡ്
+                    </button>
+                    <button onclick="switchAdminTab('candidates')" id="tabBtn-candidates" class="px-5 py-3 border-b-2 border-transparent hover:text-slate-900 flex items-center gap-2 whitespace-nowrap">
+                        <i class="fas fa-users"></i> സ്ഥാനാർത്ഥികൾ
+                    </button>
+                    <button onclick="switchAdminTab('results')" id="tabBtn-results" class="px-5 py-3 border-b-2 border-transparent hover:text-slate-900 flex items-center gap-2 whitespace-nowrap">
+                        <i class="fas fa-poll"></i> ഫലങ്ങൾ & വിജയികൾ
+                    </button>
+                </div>
+
+                <!-- Admin Tab Contents -->
+                <div class="p-4 md:p-6 overflow-y-auto flex-1 bg-slate-50">
+
+                    <!-- TAB 1: CLASS MANAGEMENT -->
+                    <div id="adminTab-classes" class="space-y-6">
+                        <!-- Add Class Form -->
+                        <div class="bg-white p-4 md:p-5 rounded-xl shadow-sm border border-slate-200">
+                            <h4 class="font-bold text-slate-800 text-base mb-3 border-b pb-2 flex items-center gap-2">
+                                <i class="fas fa-plus-circle text-emerald-600"></i> പുതിയ ക്ലാസ്സ് ചേർക്കുക
+                            </h4>
+                            <form onsubmit="handleAddClass(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">ക്ലാസ്സിന്റെ പേര് (ഉദാ: 5 A)</label>
+                                    <input type="text" id="newClassName" placeholder="ഉദാ: 7 C" class="w-full p-2.5 border rounded-lg text-sm" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">ക്ലാസ്സ് പാസ്‌വേഡ്</label>
+                                    <input type="password" id="newClassPassword" placeholder="രഹസ്യവാക്ക് നൽകുക" class="w-full p-2.5 border rounded-lg text-sm" required>
+                                </div>
+                                <div class="flex items-end">
+                                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold p-2.5 rounded-lg text-sm transition">
+                                        ക്ലാസ്സ് ചേർക്കുക
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Class List Table -->
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                            <h4 class="font-bold text-slate-800 text-base mb-3 flex items-center justify-between">
+                                <span><i class="fas fa-list text-blue-600"></i> നിലവിലുള്ള ക്ലാസ്സുകൾ</span>
+                                <span id="classCountBadge" class="bg-slate-100 text-slate-700 text-xs px-2.5 py-1 rounded-full border">0 ക്ലാസ്സുകൾ</span>
+                            </h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-100 text-slate-700 border-b border-slate-300">
+                                            <th class="p-3">ക്ലാസ്സ്</th>
+                                            <th class="p-3">പാസ്‌വേഡ്</th>
+                                            <th class="p-3">വോട്ടിംഗ് അവസ്ഥ</th>
+                                            <th class="p-3 text-right">പ്രവർത്തനങ്ങൾ (Actions)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="classesTableBody" class="divide-y divide-slate-200">
+                                        <!-- Dynamic Table Rows -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: CANDIDATE MANAGEMENT -->
+                    <div id="adminTab-candidates" class="hidden space-y-6">
+                        <!-- Add Candidate Form -->
+                        <div class="bg-white p-4 md:p-5 rounded-xl shadow-sm border border-slate-200">
+                            <h4 class="font-bold text-slate-800 text-base mb-3 border-b pb-2 flex items-center gap-2">
+                                <i class="fas fa-user-plus text-indigo-600"></i> പുതിയ സ്ഥാനാർത്ഥിയെ ചേർക്കുക
+                            </h4>
+                            <form onsubmit="handleAddCandidate(event)" class="space-y-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-600 mb-1">തെരഞ്ഞെടുപ്പ് തരം</label>
+                                        <select id="candCategory" onchange="toggleCandClassSelector()" class="w-full p-2.5 border rounded-lg text-sm bg-slate-50 font-bold">
+                                            <option value="CLASS">ക്ലാസ് ലീഡർ (Class Leader)</option>
+                                            <option value="SCHOOL">സ്കൂൾ ലീഡർ (School Leader)</option>
+                                        </select>
+                                    </div>
+                                    <div id="candClassWrapper">
+                                        <label class="block text-xs font-semibold text-slate-600 mb-1">ക്ലാസ്സ് തിരഞ്ഞെടുക്കുക</label>
+                                        <select id="candClassSelect" class="w-full p-2.5 border rounded-lg text-sm bg-slate-50">
+                                            <!-- Dynamic Options -->
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-600 mb-1">ക്രമ നമ്പർ (Sl No)</label>
+                                        <input type="number" id="candSlNo" min="1" placeholder="ഉദാ: 1" class="w-full p-2.5 border rounded-lg text-sm" required>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-600 mb-1">സ്ഥാനാർത്ഥിയുടെ പേര്</label>
+                                        <input type="text" id="candName" placeholder="പേര് എന്റർ ചെയ്യുക" class="w-full p-2.5 border rounded-lg text-sm" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-600 mb-1">ഫോട്ടോ (Image Upload/URL)</label>
+                                        <input type="text" id="candPhoto" placeholder="Image URL അല്ലെങ്കിൽ അപ്‌ലോഡ് ചെയ്യുക" class="w-full p-2.5 border rounded-lg text-sm mb-1">
+                                        <input type="file" accept="image/*" onchange="handleImageUpload(event, 'candPhoto')" class="text-xs text-slate-500 w-full">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-600 mb-1">ചിഹ്നം (Symbol Upload/URL)</label>
+                                        <input type="text" id="candSymbol" placeholder="Symbol URL അല്ലെങ്കിൽ അപ്‌ലോഡ് ചെയ്യുക" class="w-full p-2.5 border rounded-lg text-sm mb-1">
+                                        <input type="file" accept="image/*" onchange="handleImageUpload(event, 'candSymbol')" class="text-xs text-slate-500 w-full">
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-lg text-sm transition">
+                                    സ്ഥാനാർത്ഥിയെ സൂക്ഷിക്കുക (Save Candidate)
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Candidates Display List -->
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                            <h4 class="font-bold text-slate-800 text-base mb-3 flex items-center justify-between">
+                                <span><i class="fas fa-users-viewfinder text-indigo-600"></i> നിലവിലുള്ള സ്ഥാനാർത്ഥികൾ</span>
+                            </h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-100 text-slate-700 border-b border-slate-300">
+                                            <th class="p-2.5">തരം</th>
+                                            <th class="p-2.5">ക്ലാസ്സ് / ക്രമ നം.</th>
+                                            <th class="p-2.5">ഫോട്ടോ</th>
+                                            <th class="p-2.5">പേര്</th>
+                                            <th class="p-2.5">ചിഹ്നം</th>
+                                            <th class="p-2.5 text-right">പ്രവർത്തനം</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="candidatesTableBody" class="divide-y divide-slate-200">
+                                        <!-- Dynamic Candidates List -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: RESULTS & REPORTS -->
+                    <div id="adminTab-results" class="hidden space-y-6">
+                        <!-- Action Bar for Download -->
+                        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                                <h4 class="font-bold text-emerald-900 text-base">തെരഞ്ഞെടുപ്പ് ഫലങ്ങളും റിപ്പോർട്ടുകളും</h4>
+                                <p class="text-xs text-emerald-700">ഫലങ്ങൾ PDF അല്ലെങ്കിൽ CSV ഫോർമാറ്റിൽ ഡൗൺലോഡ് ചെയ്യാം</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="exportResultsCSV()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1.5 shadow transition">
+                                    <i class="fas fa-file-csv"></i> CSV ഡൗൺലോഡ്
+                                </button>
+                                <button onclick="exportResultsPDF()" class="bg-rose-700 hover:bg-rose-800 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1.5 shadow transition">
+                                    <i class="fas fa-file-pdf"></i> PDF ഡൗൺലോഡ്
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Printable PDF Results View Container -->
+                        <div id="printableResultsArea" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-8">
+                            <div class="text-center border-b pb-4">
+                                <h2 class="text-2xl font-bold text-slate-900">കായംകുളം ഗവ. ടൗൺ യു.പി.എസ്</h2>
+                                <h3 class="text-lg font-bold text-teal-800 mt-1">സ്കൂൾ & ക്ലാസ് ലീഡർ തെരഞ്ഞെടുപ്പ് - തത്സമയ ഫലം</h3>
+                                <p class="text-xs text-slate-500 mt-1">സോഷ്യൽ സയൻസ് ക്ലബ്ബ് ഔദ്യോഗികമായി തയ്യാറാക്കിയത്</p>
+                            </div>
+
+                            <!-- School Leader Results Table -->
+                            <div>
+                                <h4 class="font-bold text-lg text-amber-800 border-b-2 border-amber-400 pb-1 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-award text-amber-500"></i> സ്കൂൾ ലീഡർ തെരഞ്ഞെടുപ്പ് ഫലം
+                                </h4>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left text-sm border">
+                                        <thead class="bg-amber-100 text-amber-950">
+                                            <tr>
+                                                <th class="p-2 border">ക്രമ നം.</th>
+                                                <th class="p-2 border">സ്ഥാനാർത്ഥി</th>
+                                                <th class="p-2 border">ക്ലാസ്സ്</th>
+                                                <th class="p-2 border text-center">വോട്ട് എണ്ണം</th>
+                                                <th class="p-2 border text-center">പദവി / നില</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="schoolResultsTableBody">
+                                            <!-- Dynamic School Leader Results -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Class Leader Results Sections -->
+                            <div>
+                                <h4 class="font-bold text-lg text-blue-800 border-b-2 border-blue-400 pb-1 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-chalkboard-user text-blue-500"></i> ക്ലാസ് ലീഡർ തെരഞ്ഞെടുപ്പ് ഫലങ്ങൾ (ക്ലാസ്സ് അടിസ്ഥാനത്തിൽ)
+                                </h4>
+                                <div id="classResultsContainer" class="space-y-4">
+                                    <!-- Dynamic Per-Class Results -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN LOGIN / AUTH MODAL -->
+        <div id="adminAuthModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full text-center border border-slate-200">
+                <div class="w-14 h-14 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-1">അഡ്മിൻ പ്രവേശനം</h3>
+                <p class="text-xs text-slate-500 mb-4">തുടരുന്നതിനായി അഡ്മിൻ പാസ്‌വേഡ് നൽകുക</p>
+                <form onsubmit="handleAdminAuth(event)" class="space-y-4">
+                    <input type="password" id="adminPasswordInput" placeholder="പാസ്‌വേഡ് എന്റർ ചെയ്യുക" class="w-full p-3 border rounded-xl text-center text-lg font-bold tracking-widest focus:ring-2 focus:ring-amber-500 focus:outline-none" required>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="closeAdminAuthModal()" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl text-sm transition">റദ്ദാക്കുക</button>
+                        <button type="submit" class="w-1/2 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-xl text-sm shadow transition">ലോഗിൻ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- GENERIC ACTION PROMPT MODAL -->
+        <div id="actionPromptModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full text-center border border-slate-200">
+                <div id="actionPromptIcon" class="w-14 h-14 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3 id="actionPromptTitle" class="text-xl font-bold text-slate-800 mb-1">ക്ലാസ്സ് പാസ്‌വേഡ്</h3>
+                <p id="actionPromptSubtitle" class="text-xs text-slate-500 mb-4">തുടരുന്നതിനായി ഈ ക്ലാസ്സിന്റെ പാസ്‌വേഡ് നൽകുക</p>
+                <form onsubmit="handleActionPromptSubmit(event)" class="space-y-4">
+                    <input type="password" id="actionPromptPasswordInput" placeholder="ക്ലാസ്സ് പാസ്‌വേഡ്" class="w-full p-3 border rounded-xl text-center text-lg font-bold tracking-widest focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="closeActionPromptModal()" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl text-sm transition">റദ്ദാക്കുക</button>
+                        <button type="submit" class="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-sm shadow transition">സ്ഥിരീകരിക്കുക</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- CUSTOM ALERT MODAL -->
+        <div id="customAlertModal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full text-center border border-slate-200">
+                <div id="alertIcon" class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <h3 id="alertTitle" class="text-xl font-bold text-slate-800 mb-2">അറിയിപ്പ്</h3>
+                <div id="alertMessage" class="text-sm text-slate-600 mb-5"></div>
+                <button onclick="closeCustomAlert()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl text-sm shadow transition">ശരി</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-slate-800 text-slate-400 py-3 text-center text-xs border-t border-slate-700">
+        <p>കായംകുളം ഗവ. ടൗൺ യു.പി.എസ് - സ്കൂൾ വോട്ടിംഗ് സിസ്റ്റം &copy; സോഷ്യൽ സയൻസ് ക്ലബ്ബ്</p>
+    </footer>
+
+    <script>
+        // --- CONSTANTS & DEFAULT DATA ---
+        const ADMIN_PASSWORD_DEFAULT = "36454";
+
+        // Initial default state used if Firebase Realtime DB is brand new
+        const DEFAULT_STATE = {
+            classes: [
+                { id: 'c1', name: '5 A', password: '123', isEnded: false },
+                { id: 'c2', name: '5 B', password: '123', isEnded: false },
+                { id: 'c3', name: '6 A', password: '123', isEnded: false },
+                { id: 'c4', name: '7 A', password: '123', isEnded: false }
+            ],
+            candidates: [
+                { id: 'cand1', category: 'CLASS', className: '5 A', slNo: 1, name: 'രാഹുൽ ആർ.', photo: 'https://placehold.co/150x150/2563eb/ffffff?text=Rahul', symbol: 'https://placehold.co/100x100/e2e8f0/1e293b?text=Book' },
+                { id: 'cand2', category: 'CLASS', className: '5 A', slNo: 2, name: 'അനന്യ എസ്.', photo: 'https://placehold.co/150x150/db2777/ffffff?text=Ananya', symbol: 'https://placehold.co/100x100/e2e8f0/1e293b?text=Pen' },
+                { id: 'cand3', category: 'SCHOOL', className: '7 A', slNo: 1, name: 'അർജുൻ കൃഷ്ണ', photo: 'https://placehold.co/150x150/059669/ffffff?text=Arjun', symbol: 'https://placehold.co/100x100/e2e8f0/1e293b?text=Star' },
+                { id: 'cand4', category: 'SCHOOL', className: '7 B', slNo: 2, name: 'ദേവിക സുരേഷ്', photo: 'https://placehold.co/150x150/7c3aed/ffffff?text=Devika', symbol: 'https://placehold.co/100x100/e2e8f0/1e293b?text=Sun' }
+            ],
+            votes: {
+                class: {},
+                school: {}
+            }
+        };
+
+        // Application State
+        let appData = null;
+        let activeClassSession = null;
+        let currentPromptAction = null;
+
+        // Web Audio Synthesizer
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // --- AUDIO BEEP FUNCTIONS ---
+        function playClassBeep() {
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, ctx.currentTime);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.25);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.25);
+            } catch (e) {
+                console.log("Audio playback error:", e);
+            }
+        }
+
+        function playSchoolLongBeep() {
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(1046.50, ctx.currentTime);
+                gain.gain.setValueAtTime(0.4, ctx.currentTime);
+                gain.gain.setValueAtTime(0.4, ctx.currentTime + 1.0);
+                gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 1.2);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 1.2);
+            } catch (e) {
+                console.log("Audio playback error:", e);
+            }
+        }
+
+        // --- FIREBASE REALTIME CLOUD SYNC ---
+        function loadData() {
+            // Listen for live database changes across all devices
+            database.ref('electionData').on('value', (snapshot) => {
+                const val = snapshot.val();
+                if (val) {
+                    appData = val;
+                    // Ensure votes objects are initialized
+                    if (!appData.votes) appData.votes = { class: {}, school: {} };
+                    if (!appData.votes.class) appData.votes.class = {};
+                    if (!appData.votes.school) appData.votes.school = {};
+                } else {
+                    appData = DEFAULT_STATE;
+                    saveData();
+                }
+
+                // Auto Refresh Dropdowns & UI
+                populateClassSelectDropdowns();
+
+                // Live Update Admin View if open
+                const adminModal = document.getElementById('adminModal');
+                if (adminModal && !adminModal.classList.contains('hidden')) {
+                    renderAdminClasses();
+                    renderAdminCandidates();
+                    renderAdminResults();
+                }
+
+                // Check active session status on live updates
+                if (activeClassSession) {
+                    const currentCls = appData.classes.find(c => c.id === activeClassSession.id);
+                    if (currentCls && currentCls.isEnded) {
+                        showView('classEndedView');
+                    }
+                }
+            });
+        }
+
+        function saveData() {
+            if (appData) {
+                database.ref('electionData').set(appData);
+            }
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            loadData();
+            showView('classLoginView');
+        };
+
+        // --- NAVIGATION & UI VIEW CONTROLLER ---
+        function showView(viewId) {
+            const views = [
+                'classLoginView',
+                'classLeaderVoteView',
+                'schoolLeaderNoticeView',
+                'schoolLeaderVoteView',
+                'finalThankYouView',
+                'classEndedView'
+            ];
+            
+            views.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+
+            const activeEl = document.getElementById(viewId);
+            if (activeEl) activeEl.classList.remove('hidden');
+
+            const headerBar = document.getElementById('activeSessionHeader');
+            if (activeClassSession && viewId !== 'classLoginView') {
+                headerBar.classList.remove('hidden');
+                document.getElementById('currentActiveClassDisplay').textContent = `ക്ലാസ്സ്: ${activeClassSession.name}`;
+            } else {
+                headerBar.classList.add('hidden');
+            }
+        }
+
+        function populateClassSelectDropdowns() {
+            if (!appData || !appData.classes) return;
+
+            const loginSelect = document.getElementById('loginClassSelect');
+            const candSelect = document.getElementById('candClassSelect');
+
+            const currentLoginVal = loginSelect.value;
+            loginSelect.innerHTML = '<option value="" disabled selected>-- ക്ലാസ്സ് തിരഞ്ഞെടുക്കുക --</option>';
+            candSelect.innerHTML = '';
+
+            appData.classes.forEach(c => {
+                const opt1 = document.createElement('option');
+                opt1.value = c.id;
+                opt1.textContent = `ക്ലാസ്സ് ${c.name}`;
+                loginSelect.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = c.name;
+                opt2.textContent = c.name;
+                candSelect.appendChild(opt2);
+            });
+
+            if (currentLoginVal) {
+                loginSelect.value = currentLoginVal;
+            }
+        }
+
+        // --- CLASS LOGIN & SESSION HANDLING ---
+        function handleClassLogin(e) {
+            e.preventDefault();
+            const classId = document.getElementById('loginClassSelect').value;
+            const password = document.getElementById('loginClassPassword').value;
+
+            const cls = appData.classes.find(c => c.id === classId);
+            if (!cls) {
+                showAlert('ദയവായി സാധുവായ ഒരു ക്ലാസ്സ് തിരഞ്ഞെടുക്കുക.');
+                return;
+            }
+
+            if (cls.password !== password) {
+                showAlert('തെറ്റായ പാസ്‌വേഡ്! ദയവായി വീണ്ടും ശ്രമിക്കുക.');
+                return;
+            }
+
+            activeClassSession = cls;
+            document.getElementById('loginClassPassword').value = '';
+
+            if (cls.isEnded) {
+                showView('classEndedView');
+                return;
+            }
+
+            startClassLeaderVoting();
+        }
+
+        function logoutClassSession() {
+            activeClassSession = null;
+            showView('classLoginView');
+        }
+
+        function startClassLeaderVoting() {
+            if (!activeClassSession) return;
+
+            const currentCls = appData.classes.find(c => c.id === activeClassSession.id);
+            if (currentCls && currentCls.isEnded) {
+                showView('classEndedView');
+                return;
+            }
+
+            document.getElementById('classLeaderTitle').textContent = `ക്ലാസ് ലീഡർ തെരഞ്ഞെടുപ്പ് (${activeClassSession.name})`;
+
+            const classCands = appData.candidates.filter(c => c.category === 'CLASS' && c.className === activeClassSession.name);
+            
+            const grid = document.getElementById('classCandidatesGrid');
+            grid.innerHTML = '';
+
+            classCands.forEach(cand => {
+                grid.appendChild(createCandidateCard(cand, () => castClassVote(cand.id)));
+            });
+
+            grid.appendChild(createNotaCard(() => castClassVote('NOTA')));
+
+            showView('classLeaderVoteView');
+        }
+
+        function createCandidateCard(cand, onVoteCallback) {
+            const card = document.createElement('div');
+            card.className = "bg-white p-4 rounded-xl shadow-md border border-slate-200 flex items-center justify-between gap-3 hover:shadow-lg transition";
+
+            const defaultImg = "https://placehold.co/100x100/e2e8f0/64748b?text=Photo";
+            const defaultSymbol = "https://placehold.co/80x80/f1f5f9/475569?text=Symbol";
+
+            card.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="font-extrabold text-lg text-slate-400 w-6 text-center">${cand.slNo}</div>
+                    <img src="${cand.photo || defaultImg}" onerror="this.src='${defaultImg}'" class="w-16 h-16 rounded-full object-cover border-2 border-slate-300">
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-lg">${cand.name}</h4>
+                        <p class="text-xs text-slate-500 font-semibold">ക്ലാസ്സ്: ${cand.className || '-'}</p>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                    <img src="${cand.symbol || defaultSymbol}" onerror="this.src='${defaultSymbol}'" class="w-12 h-12 object-contain bg-slate-100 p-1 rounded-lg border">
+                    <button class="vote-btn bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold px-4 py-2 rounded-lg text-sm shadow transition flex items-center gap-1">
+                        <i class="fas fa-check-circle"></i> വോട്ട്
+                    </button>
+                </div>
+            `;
+
+            card.querySelector('.vote-btn').addEventListener('click', onVoteCallback);
+            return card;
+        }
+
+        function createNotaCard(onVoteCallback) {
+            const card = document.createElement('div');
+            card.className = "bg-slate-100 p-4 rounded-xl shadow-md border-2 border-dashed border-slate-300 flex items-center justify-between gap-3 hover:shadow-lg transition";
+
+            card.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-16 h-16 rounded-full bg-slate-300 text-slate-600 font-bold flex items-center justify-center text-xl">
+                        NOTA
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-lg">നോട്ട (NOTA)</h4>
+                        <p class="text-xs text-slate-500 font-semibold">മേൽപ്പറഞ്ഞ ആരുമല്ല (None Of The Above)</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="vote-btn bg-slate-700 hover:bg-slate-800 active:scale-95 text-white font-bold px-4 py-2 rounded-lg text-sm shadow transition flex items-center gap-1">
+                        <i class="fas fa-ban"></i> വോട്ട്
+                    </button>
+                </div>
+            `;
+
+            card.querySelector('.vote-btn').addEventListener('click', onVoteCallback);
+            return card;
+        }
+
+        // --- VOTING PROCESS & TRANSITIONS ---
+        function castClassVote(candId) {
+            playClassBeep();
+
+            const className = activeClassSession.name;
+            if (!appData.votes.class[className]) {
+                appData.votes.class[className] = {};
+            }
+            appData.votes.class[className][candId] = (appData.votes.class[className][candId] || 0) + 1;
+            saveData();
+
+            showView('schoolLeaderNoticeView');
+            document.getElementById('classThankYouCard').classList.remove('hidden');
+            document.getElementById('schoolLeaderNoticeCard').classList.add('hidden');
+
+            setTimeout(() => {
+                document.getElementById('classThankYouCard').classList.add('hidden');
+                document.getElementById('schoolLeaderNoticeCard').classList.remove('hidden');
+
+                setTimeout(() => {
+                    startSchoolLeaderVoting();
+                }, 3000);
+            }, 2000);
+        }
+
+        function startSchoolLeaderVoting() {
+            const schoolCands = appData.candidates.filter(c => c.category === 'SCHOOL');
+            const grid = document.getElementById('schoolCandidatesGrid');
+            grid.innerHTML = '';
+
+            schoolCands.forEach(cand => {
+                grid.appendChild(createCandidateCard(cand, () => castSchoolVote(cand.id)));
+            });
+
+            grid.appendChild(createNotaCard(() => castSchoolVote('NOTA')));
+
+            showView('schoolLeaderVoteView');
+        }
+
+        function castSchoolVote(candId) {
+            playSchoolLongBeep();
+
+            appData.votes.school[candId] = (appData.votes.school[candId] || 0) + 1;
+            saveData();
+
+            showView('finalThankYouView');
+            
+            let timeLeft = 5;
+            const timerDisplay = document.getElementById('countdownTimer');
+            timerDisplay.textContent = timeLeft;
+
+            const countdownInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    startClassLeaderVoting();
+                }
+            }, 1000);
+        }
+
+        // --- POLLING OFFICER ACTIONS ---
+        function promptViewClassVotes() {
+            if (!activeClassSession) return;
+            openActionPrompt(
+                'ക്ലാസ്സ് ആകെ വോട്ട് എണ്ണം കാണുക',
+                `ക്ലാസ്സ് ${activeClassSession.name}-ൽ ആകെ രേഖപ്പെടുത്തിയ വോട്ടുകൾ കാണുന്നതിന് പാസ്‌വേഡ് നൽകുക:`,
+                (enteredPassword) => {
+                    if (enteredPassword === activeClassSession.password) {
+                        const classVotes = appData.votes.class[activeClassSession.name] || {};
+                        let totalClassVotes = 0;
+                        Object.keys(classVotes).forEach(key => {
+                            totalClassVotes += classVotes[key] || 0;
+                        });
+
+                        let msgHtml = `
+                            <div class="text-center py-4 space-y-2">
+                                <div class="text-slate-600 font-semibold text-base">
+                                    ക്ലാസ്സ് <span class="text-slate-900 font-bold">${activeClassSession.name}</span>-ൽ ഇതുവരെ രേഖപ്പെടുത്തിയ ആകെ വോട്ടുകൾ:
+                                </div>
+                                <div class="text-4xl font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 py-3 rounded-xl shadow-inner my-2">
+                                    ${totalClassVotes}
+                                </div>
+                                <p class="text-xs text-slate-500 font-bold">
+                                    (വ്യക്തിഗത സ്ഥാനാർത്ഥികളുടെ വോട്ട് അഡ്മിൻ പാനലിൽ മാത്രമേ ലഭ്യമാകൂ)
+                                </p>
+                            </div>
+                        `;
+
+                        showAlert(msgHtml, 'ക്ലാസ്സ് വോട്ട് എണ്ണം');
+                    } else {
+                        showAlert('തെറ്റായ പാസ്‌വേഡ്!');
+                    }
+                }
+            );
+        }
+
+        function promptEndClassPoll() {
+            if (!activeClassSession) return;
+            openActionPrompt(
+                'വോട്ടിംഗ് അവസാനിപ്പിക്കുക',
+                `ക്ലാസ്സ് ${activeClassSession.name}-ലെ വോട്ടിംഗ് പൂർണ്ണമായി അവസാനിപ്പിക്കുന്നതിനായി പാസ്‌വേഡ് നൽകുക:`,
+                (enteredPassword) => {
+                    if (enteredPassword === activeClassSession.password) {
+                        const cls = appData.classes.find(c => c.id === activeClassSession.id);
+                        if (cls) {
+                            cls.isEnded = true;
+                            saveData();
+                            showView('classEndedView');
+                            showAlert(`ക്ലാസ്സ് ${cls.name}-ലെ വോട്ടിംഗ് വിജയകരമായി അവസാനിപ്പിച്ചു.`);
+                        }
+                    } else {
+                        showAlert('തെറ്റായ പാസ്‌വേഡ്!');
+                    }
+                }
+            );
+        }
+
+        function openActionPrompt(title, subtitle, callback) {
+            document.getElementById('actionPromptTitle').textContent = title;
+            document.getElementById('actionPromptSubtitle').textContent = subtitle;
+            document.getElementById('actionPromptPasswordInput').value = '';
+            currentPromptAction = callback;
+            document.getElementById('actionPromptModal').classList.remove('hidden');
+        }
+
+        function closeActionPromptModal() {
+            document.getElementById('actionPromptModal').classList.add('hidden');
+            currentPromptAction = null;
+        }
+
+        function handleActionPromptSubmit(e) {
+            e.preventDefault();
+            const password = document.getElementById('actionPromptPasswordInput').value;
+            if (currentPromptAction) {
+                const action = currentPromptAction;
+                closeActionPromptModal();
+                action(password);
+            }
+        }
+
+        // --- ADMIN PANEL AUTH & DASHBOARD ---
+        function openAdminAuthModal() {
+            document.getElementById('adminPasswordInput').value = '';
+            document.getElementById('adminAuthModal').classList.remove('hidden');
+        }
+
+        function closeAdminAuthModal() {
+            document.getElementById('adminAuthModal').classList.add('hidden');
+        }
+
+        function handleAdminAuth(e) {
+            e.preventDefault();
+            const pass = document.getElementById('adminPasswordInput').value;
+            if (pass === ADMIN_PASSWORD_DEFAULT) {
+                closeAdminAuthModal();
+                openAdminModal();
+            } else {
+                showAlert('തെറ്റായ അഡ്മിൻ പാസ്‌വേഡ്!');
+            }
+        }
+
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.remove('hidden');
+            renderAdminClasses();
+            renderAdminCandidates();
+            renderAdminResults();
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function switchAdminTab(tabName) {
+            const tabs = ['classes', 'candidates', 'results'];
+            tabs.forEach(t => {
+                const content = document.getElementById(`adminTab-${t}`);
+                const btn = document.getElementById(`tabBtn-${t}`);
+                if (t === tabName) {
+                    content.classList.remove('hidden');
+                    btn.classList.add('border-emerald-600', 'text-emerald-800', 'bg-white');
+                    btn.classList.remove('border-transparent');
+                } else {
+                    content.classList.add('hidden');
+                    btn.classList.remove('border-emerald-600', 'text-emerald-800', 'bg-white');
+                    btn.classList.add('border-transparent');
+                }
+            });
+
+            if (tabName === 'results') {
+                renderAdminResults();
+            }
+        }
+
+        // TAB 1: Class Management
+        function renderAdminClasses() {
+            const tbody = document.getElementById('classesTableBody');
+            tbody.innerHTML = '';
+
+            document.getElementById('classCountBadge').textContent = `${appData.classes.length} ക്ലാസ്സുകൾ`;
+
+            appData.classes.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50";
+                
+                const statusBadge = c.isEnded 
+                    ? `<span class="bg-rose-100 text-rose-800 text-xs px-2.5 py-1 rounded-full font-bold">അവസാനിച്ചു</span>`
+                    : `<span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold">സജീവം</span>`;
+
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-800">ക്ലാസ്സ് ${c.name}</td>
+                    <td class="p-3 font-mono text-slate-600">${c.password}</td>
+                    <td class="p-3">${statusBadge}</td>
+                    <td class="p-3 text-right space-x-1">
+                        <button onclick="toggleClassVotingStatus('${c.id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-3 py-1 rounded text-xs font-bold transition">
+                            ${c.isEnded ? '<i class="fas fa-play"></i> Restart' : '<i class="fas fa-pause"></i> End'}
+                        </button>
+                        <button onclick="deleteClass('${c.id}')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2.5 py-1 rounded text-xs transition">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            populateClassSelectDropdowns();
+        }
+
+        function handleAddClass(e) {
+            e.preventDefault();
+            const name = document.getElementById('newClassName').value.trim();
+            const password = document.getElementById('newClassPassword').value.trim();
+
+            if (!name || !password) return;
+
+            const existing = appData.classes.find(c => c.name.toLowerCase() === name.toLowerCase());
+            if (existing) {
+                showAlert('ഈ പേരിൽ ഒരു ക്ലാസ്സ് നിലവിലുണ്ട്!');
+                return;
+            }
+
+            const newCls = {
+                id: 'c_' + Date.now(),
+                name: name,
+                password: password,
+                isEnded: false
+            };
+
+            appData.classes.push(newCls);
+            saveData();
+            
+            document.getElementById('newClassName').value = '';
+            document.getElementById('newClassPassword').value = '';
+
+            renderAdminClasses();
+            showAlert(`ക്ലാസ്സ് ${name} വിജയകരമായി ചേർത്തു.`);
+        }
+
+        function toggleClassVotingStatus(classId) {
+            const cls = appData.classes.find(c => c.id === classId);
+            if (cls) {
+                cls.isEnded = !cls.isEnded;
+                saveData();
+                renderAdminClasses();
+            }
+        }
+
+        function deleteClass(classId) {
+            appData.classes = appData.classes.filter(c => c.id !== classId);
+            saveData();
+            renderAdminClasses();
+        }
+
+        // TAB 2: Candidate Management
+        function toggleCandClassSelector() {
+            const cat = document.getElementById('candCategory').value;
+            const wrapper = document.getElementById('candClassWrapper');
+            if (cat === 'SCHOOL') {
+                wrapper.classList.add('hidden');
+            } else {
+                wrapper.classList.remove('hidden');
+            }
+        }
+
+        function handleImageUpload(event, targetInputId) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById(targetInputId).value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleAddCandidate(e) {
+            e.preventDefault();
+            const category = document.getElementById('candCategory').value;
+            const className = category === 'CLASS' ? document.getElementById('candClassSelect').value : '';
+            const slNo = parseInt(document.getElementById('candSlNo').value);
+            const name = document.getElementById('candName').value.trim();
+            const photo = document.getElementById('candPhoto').value.trim();
+            const symbol = document.getElementById('candSymbol').value.trim();
+
+            const newCand = {
+                id: 'cand_' + Date.now(),
+                category: category,
+                className: className,
+                slNo: slNo,
+                name: name,
+                photo: photo,
+                symbol: symbol
+            };
+
+            appData.candidates.push(newCand);
+            saveData();
+
+            document.getElementById('candName').value = '';
+            document.getElementById('candPhoto').value = '';
+            document.getElementById('candSymbol').value = '';
+            document.getElementById('candSlNo').value = slNo + 1;
+
+            renderAdminCandidates();
+            showAlert('സ്ഥാനാർത്ഥിയെ വിജയകരമായി ചേർത്തു.');
+        }
+
+        function deleteCandidate(candId) {
+            appData.candidates = appData.candidates.filter(c => c.id !== candId);
+            saveData();
+            renderAdminCandidates();
+        }
+
+        function renderAdminCandidates() {
+            const tbody = document.getElementById('candidatesTableBody');
+            tbody.innerHTML = '';
+
+            appData.candidates.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50";
+
+                const categoryBadge = c.category === 'SCHOOL'
+                    ? `<span class="bg-amber-100 text-amber-900 text-xs px-2 py-0.5 rounded font-bold">സ്കൂൾ</span>`
+                    : `<span class="bg-blue-100 text-blue-900 text-xs px-2 py-0.5 rounded font-bold">ക്ലാസ്സ്</span>`;
+
+                const defaultImg = "https://placehold.co/80x80/e2e8f0/64748b?text=Photo";
+                const defaultSymbol = "https://placehold.co/80x80/f1f5f9/475569?text=Symbol";
+
+                tr.innerHTML = `
+                    <td class="p-2.5">${categoryBadge}</td>
+                    <td class="p-2.5 font-semibold text-slate-700">${c.className || 'എല്ലാ ക്ലാസ്സും'} (ക്രമം: ${c.slNo})</td>
+                    <td class="p-2.5">
+                        <img src="${c.photo || defaultImg}" onerror="this.src='${defaultImg}'" class="w-10 h-10 rounded-full object-cover border">
+                    </td>
+                    <td class="p-2.5 font-bold text-slate-800">${c.name}</td>
+                    <td class="p-2.5">
+                        <img src="${c.symbol || defaultSymbol}" onerror="this.src='${defaultSymbol}'" class="w-8 h-8 object-contain border rounded bg-white p-0.5">
+                    </td>
+                    <td class="p-2.5 text-right">
+                        <button onclick="deleteCandidate('${c.id}')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2.5 py-1 rounded text-xs transition">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // TAB 3: Results & Live Counts
+        function renderAdminResults() {
+            // 1. School Leader Results
+            const schoolTbody = document.getElementById('schoolResultsTableBody');
+            schoolTbody.innerHTML = '';
+
+            const schoolCands = appData.candidates.filter(c => c.category === 'SCHOOL');
+            const schoolVoteMap = appData.votes.school || {};
+
+            let schoolResults = schoolCands.map(c => ({
+                id: c.id,
+                name: c.name,
+                className: c.className || '-',
+                slNo: c.slNo,
+                votes: schoolVoteMap[c.id] || 0,
+                isNota: false
+            }));
+
+            schoolResults.push({
+                id: 'NOTA',
+                name: 'നോട്ട (NOTA)',
+                className: '-',
+                slNo: '-',
+                votes: schoolVoteMap['NOTA'] || 0,
+                isNota: true
+            });
+
+            schoolResults.sort((a, b) => b.votes - a.votes);
+
+            schoolResults.forEach((res, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = idx === 0 && res.votes > 0 ? "bg-amber-50/80 font-bold" : "";
+
+                let statusBadge = "-";
+                if (idx === 0 && res.votes > 0 && !res.isNota) {
+                    statusBadge = `<span class="bg-amber-500 text-white px-2.5 py-1 rounded-full text-xs font-bold flex items-center justify-center gap-1"><i class="fas fa-trophy text-yellow-300"></i> വിജയി (Winner)</span>`;
+                }
+
+                tr.innerHTML = `
+                    <td class="p-2 border text-center">${res.slNo}</td>
+                    <td class="p-2 border font-bold ${res.isNota ? 'text-slate-500' : 'text-slate-800'}">${res.name}</td>
+                    <td class="p-2 border">${res.className}</td>
+                    <td class="p-2 border text-center font-extrabold text-teal-800 text-base">${res.votes}</td>
+                    <td class="p-2 border text-center">${statusBadge}</td>
+                `;
+                schoolTbody.appendChild(tr);
+            });
+
+            // 2. Class Leader Results
+            const classResultsContainer = document.getElementById('classResultsContainer');
+            classResultsContainer.innerHTML = '';
+
+            appData.classes.forEach(cls => {
+                const classBox = document.createElement('div');
+                classBox.className = "bg-slate-50 border border-slate-200 p-3 rounded-lg";
+
+                const classCands = appData.candidates.filter(c => c.category === 'CLASS' && c.className === cls.name);
+                const classVoteMap = (appData.votes.class && appData.votes.class[cls.name]) ? appData.votes.class[cls.name] : {};
+
+                let cResults = classCands.map(c => ({
+                    id: c.id,
+                    name: c.name,
+                    slNo: c.slNo,
+                    votes: classVoteMap[c.id] || 0,
+                    isNota: false
+                }));
+
+                cResults.push({
+                    id: 'NOTA',
+                    name: 'നോട്ട (NOTA)',
+                    slNo: '-',
+                    votes: classVoteMap['NOTA'] || 0,
+                    isNota: true
+                });
+
+                cResults.sort((a, b) => b.votes - a.votes);
+
+                let rowsHtml = '';
+                cResults.forEach((cr, i) => {
+                    let wBadge = "";
+                    if (i === 0 && cr.votes > 0 && !cr.isNota) {
+                        wBadge = `<span class="bg-blue-600 text-white text-xs px-2 py-0.5 rounded font-bold"><i class="fas fa-check"></i> വിജയി</span>`;
+                    }
+
+                    rowsHtml += `
+                        <tr class="${i === 0 && cr.votes > 0 ? 'bg-blue-50/60 font-semibold' : ''}">
+                            <td class="p-2 border text-center">${cr.slNo}</td>
+                            <td class="p-2 border font-bold">${cr.name}</td>
+                            <td class="p-2 border text-center font-bold text-blue-900">${cr.votes}</td>
+                            <td class="p-2 border text-center">${wBadge}</td>
+                        </tr>
+                    `;
+                });
+
+                classBox.innerHTML = `
+                    <h5 class="font-bold text-slate-800 text-sm mb-2 flex items-center justify-between">
+                        <span><i class="fas fa-chalkboard text-blue-600"></i> ക്ലാസ്സ് ${cls.name}</span>
+                    </h5>
+                    <table class="w-full text-left text-xs border bg-white">
+                        <thead class="bg-slate-200 text-slate-800">
+                            <tr>
+                                <th class="p-2 border text-center">ക്രമം</th>
+                                <th class="p-2 border">സ്ഥാനാർത്ഥി</th>
+                                <th class="p-2 border text-center">വോട്ട്</th>
+                                <th class="p-2 border text-center">നില</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rowsHtml}</tbody>
+                    </table>
+                `;
+
+                classResultsContainer.appendChild(classBox);
+            });
+        }
+
+        // --- CSV & PDF EXPORT ---
+        function exportResultsCSV() {
+            let csvContent = "\uFEFF";
+            csvContent += "കായംകുളം ഗവ. ടൗൺ യു.പി.എസ് - തെരഞ്ഞെടുപ്പ് ഫലം\n";
+            csvContent += "സോഷ്യൽ സയൻസ് ക്ലബ്ബ്\n\n";
+
+            csvContent += "--- സ്കൂൾ ലീഡർ തെരഞ്ഞെടുപ്പ് ഫലം ---\n";
+            csvContent += "ക്രമ നമ്പർ,സ്ഥാനാർത്ഥി,ക്ലാസ്സ്,വോട്ട് എണ്ണം\n";
+
+            const schoolCands = appData.candidates.filter(c => c.category === 'SCHOOL');
+            const schoolVoteMap = appData.votes.school || {};
+
+            schoolCands.forEach(c => {
+                csvContent += `"${c.slNo}","${c.name}","${c.className || '-'}","${schoolVoteMap[c.id] || 0}"\n`;
+            });
+            csvContent += `"","നോട്ട (NOTA)","","${schoolVoteMap['NOTA'] || 0}"\n\n`;
+
+            csvContent += "--- ക്ലാസ് ലീഡർ തെരഞ്ഞെടുപ്പ് ഫലങ്ങൾ ---\n";
+            appData.classes.forEach(cls => {
+                csvContent += `\nക്ലാസ്സ്: ${cls.name}\n`;
+                csvContent += "ക്രമ നമ്പർ,സ്ഥാനാർത്ഥി,വോട്ട് എണ്ണം\n";
+
+                const classCands = appData.candidates.filter(c => c.category === 'CLASS' && c.className === cls.name);
+                const classVoteMap = (appData.votes.class && appData.votes.class[cls.name]) ? appData.votes.class[cls.name] : {};
+
+                classCands.forEach(c => {
+                    csvContent += `"${c.slNo}","${c.name}","${classVoteMap[c.id] || 0}"\n`;
+                });
+                csvContent += `"","നോട്ട (NOTA)","${classVoteMap['NOTA'] || 0}"\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "Election_Results_Kayamkulam_Town_UPS.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportResultsPDF() {
+            const element = document.getElementById('printableResultsArea');
+            const opt = {
+                margin:       0.5,
+                filename:     'Election_Results_Kayamkulam_Town_UPS.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save();
+        }
+
+        // --- UTILITY MODALS ---
+        function showAlert(message, title = 'അറിയിപ്പ്') {
+            document.getElementById('alertTitle').textContent = title;
+            document.getElementById('alertMessage').innerHTML = message;
+            document.getElementById('customAlertModal').classList.remove('hidden');
+        }
+
+        function closeCustomAlert() {
+            document.getElementById('customAlertModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
