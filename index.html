@@ -378,7 +378,31 @@
                                     <i class="fas fa-file-csv"></i> CSV ഡൗൺലോഡ്
                                 </button>
                                 <button onclick="exportResultsPDF()" class="bg-rose-700 hover:bg-rose-800 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1.5 shadow transition">
-                                    <i class="fas fa-file-pdf"></i> PDF ഡൗൺലോഡ്
+                                    <i class="fas fa-file-pdf"></i> PDF ഡൗൺലോড
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Reset Polled Votes Control Panel -->
+                        <div class="bg-rose-50 border border-rose-200 p-4 rounded-xl space-y-3">
+                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-rose-200 pb-2">
+                                <div>
+                                    <h4 class="font-bold text-rose-900 text-sm md:text-base flex items-center gap-2">
+                                        <i class="fas fa-rotate-left text-rose-600"></i> വോട്ട് റീസെറ്റ് ചെയ്യുക (Reset Polled Votes)
+                                    </h4>
+                                    <p class="text-xs text-rose-700">അഡ്മിന് സ്കൂൾ/ക്ലാസ്സ് വോട്ടുകൾ നീക്കം ചെയ്യാം (ക്ലാസ്സുകളും സ്ഥാനാർത്ഥികളും അതുപോലെ തുടരും)</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <button onclick="confirmResetSchoolVotes()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-2 rounded-lg shadow transition flex items-center gap-1.5">
+                                    <i class="fas fa-award"></i> സ്കൂൾ വോട്ടുകൾ മാത്രം റീസെറ്റ് ചെയ്യുക
+                                </button>
+                                <button onclick="confirmResetAllClassVotes()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-2 rounded-lg shadow transition flex items-center gap-1.5">
+                                    <i class="fas fa-chalkboard"></i> എല്ലാ ക്ലാസ്സ് വോട്ടുകളും റീസെറ്റ് ചെയ്യുക
+                                </button>
+                                <button onclick="confirmResetAllElectionVotes()" class="bg-rose-700 hover:bg-rose-800 text-white font-bold px-3 py-2 rounded-lg shadow transition flex items-center gap-1.5">
+                                    <i class="fas fa-trash-alt"></i> മുഴുവൻ വോട്ടുകളും റീസെറ്റ് ചെയ്യുക
                                 </button>
                             </div>
                         </div>
@@ -475,6 +499,21 @@
                 <h3 id="alertTitle" class="text-xl font-bold text-slate-800 mb-2">അറിയിപ്പ്</h3>
                 <div id="alertMessage" class="text-sm text-slate-600 mb-5"></div>
                 <button onclick="closeCustomAlert()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl text-sm shadow transition">ശരി</button>
+            </div>
+        </div>
+
+        <!-- CUSTOM CONFIRMATION MODAL -->
+        <div id="customConfirmModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full text-center border border-slate-200">
+                <div class="w-14 h-14 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 id="confirmTitle" class="text-xl font-bold text-slate-800 mb-1">സ്ഥിരീകരിക്കുക</h3>
+                <p id="confirmMessage" class="text-xs text-slate-600 mb-5"></p>
+                <div class="flex gap-2">
+                    <button onclick="closeConfirmModal()" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl text-sm transition">റദ്ദാക്കുക</button>
+                    <button id="confirmActionButton" class="w-1/2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl text-sm shadow transition">തീർച്ചയായും</button>
+                </div>
             </div>
         </div>
 
@@ -1250,6 +1289,9 @@
                 classBox.innerHTML = `
                     <h5 class="font-bold text-slate-800 text-sm mb-2 flex items-center justify-between">
                         <span><i class="fas fa-chalkboard text-blue-600"></i> ക്ലാസ്സ് ${cls.name}</span>
+                        <button onclick="confirmResetSpecificClassVotes('${cls.name}')" class="text-xs bg-rose-100 hover:bg-rose-200 text-rose-800 px-2 py-1 rounded font-bold transition flex items-center gap-1" title="ഈ ക്ലാസ്സിലെ വോട്ടുകൾ മാത്രം റീസെറ്റ് ചെയ്യുക">
+                            <i class="fas fa-rotate-left"></i> വോട്ട് റീസെറ്റ്
+                        </button>
                     </h5>
                     <table class="w-full text-left text-xs border bg-white">
                         <thead class="bg-slate-200 text-slate-800">
@@ -1266,6 +1308,87 @@
 
                 classResultsContainer.appendChild(classBox);
             });
+        }
+
+        // --- ADMIN RESET VOTE FUNCTIONS ---
+        let pendingConfirmAction = null;
+
+        function showConfirm(title, message, onConfirm) {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            pendingConfirmAction = onConfirm;
+            document.getElementById('customConfirmModal').classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('customConfirmModal').classList.add('hidden');
+            pendingConfirmAction = null;
+        }
+
+        document.getElementById('confirmActionButton').onclick = function() {
+            if (pendingConfirmAction) {
+                const action = pendingConfirmAction;
+                closeConfirmModal();
+                action();
+            }
+        };
+
+        function confirmResetSchoolVotes() {
+            showConfirm(
+                'സ്കൂൾ വോട്ട് റീസെറ്റ് ചെയ്യുക',
+                'സ്കൂൾ ലീഡർ തെരഞ്ഞെടുപ്പിൽ ഇതുവരെ രേഖപ്പെടുത്തിയ എല്ലാ വോട്ടുകളും നീക്കം ചെയ്യാൻ താങ്കൾ ആഗ്രഹിക്കുന്നുവോ?',
+                () => {
+                    if (!appData.votes) appData.votes = { class: {}, school: {} };
+                    appData.votes.school = {};
+                    saveData();
+                    renderAdminResults();
+                    showAlert('സ്കൂൾ ലീഡർ വോട്ടുകൾ വിജയകരമായി റീസെറ്റ് ചെയ്തു.');
+                }
+            );
+        }
+
+        function confirmResetAllClassVotes() {
+            showConfirm(
+                'എല്ലാ ക്ലാസ്സ് വോട്ടുകളും റീസെറ്റ് ചെയ്യുക',
+                'എല്ലാ ക്ലാസ്സുകളിലെയും ക്ലാസ് ലീഡർ വോട്ടുകൾ പൂർണ്ണമായി നീക്കം ചെയ്യാൻ താങ്കൾ ആഗ്രഹിക്കുന്നുവോ?',
+                () => {
+                    if (!appData.votes) appData.votes = { class: {}, school: {} };
+                    appData.votes.class = {};
+                    saveData();
+                    renderAdminResults();
+                    showAlert('എല്ലാ ക്ലാസ്സ് ലീഡർ വോട്ടുകളും വിജയകരമായി റീസെറ്റ് ചെയ്തു.');
+                }
+            );
+        }
+
+        function confirmResetSpecificClassVotes(className) {
+            showConfirm(
+                `ക്ലാസ്സ് ${className} വോട്ട് റീസെറ്റ് ചെയ്യുക`,
+                `ക്ലാസ്സ് ${className}-ലെ ക്ലാസ് ലീഡർ വോട്ടുകൾ മാത്രം നീക്കം ചെയ്യാൻ താങ്കൾ ആഗ്രഹിക്കുന്നുവോ?`,
+                () => {
+                    if (appData.votes && appData.votes.class && appData.votes.class[className]) {
+                        delete appData.votes.class[className];
+                        saveData();
+                        renderAdminResults();
+                        showAlert(`ക്ലാസ്സ് ${className}-ലെ വോട്ടുകൾ വിജയകരമായി റീസെറ്റ് ചെയ്തു.`);
+                    } else {
+                        showAlert(`ക്ലാസ്സ് ${className}-ൽ വോട്ടുകളൊന്നും രേഖപ്പെടുത്തിയിട്ടില്ല.`);
+                    }
+                }
+            );
+        }
+
+        function confirmResetAllElectionVotes() {
+            showConfirm(
+                'മുഴുവൻ വോട്ടുകളും റീസെറ്റ് ചെയ്യുക',
+                'ശ്രദ്ധിക്കുക: സ്കൂൾ ലീഡർ, എല്ലാ ക്ലാസ് ലീഡർ വോട്ടുകളും പൂർണ്ണമായും മായ്ക്കപ്പെടും. തുടരണോ?',
+                () => {
+                    appData.votes = { class: {}, school: {} };
+                    saveData();
+                    renderAdminResults();
+                    showAlert('എല്ലാ വോട്ടുകളും പൂർണ്ണമായി റീസെറ്റ് ചെയ്തു.');
+                }
+            );
         }
 
         // --- CSV & PDF EXPORT ---
